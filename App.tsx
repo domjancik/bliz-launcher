@@ -22,6 +22,7 @@ import {
   Linking,
   Image,
   ImageBackground,
+  BackHandler,
 } from 'react-native';
 
 import {
@@ -56,137 +57,92 @@ async function loadData() {
   return querySnapshot.docs.map(doc => plainToClass(LauncherItem, doc));
 }
 
+BackHandler.addEventListener('hardwareBackPress', function() {
+  // this.onMainScreen and this.goBack are just examples, you need to use your own implementation here
+  // Typically you would use the navigator here to go to the last state.
+
+  return true;
+});
+
 const App = () => {
-  let items = [...Array(10).keys()];
+  //let items = [...Array(10).keys()];
+  let items = ['Honza', 'Kokos', 'Honza', 'Kokos', 'Honza', 'Kokos'];
   //items = loadData();
   function handleButton(_) {
-    console.log('hello from here');
-    Linking.openURL('skype:pan_anonym');
+    Linking.openURL('skype:pan_anonym?call&amp;video=true');
   }
 
   return (
     <>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle="light-content" backgroundColor="#70587C" />
       <SafeAreaView>
         <View style={styles.body}>
           <FlatList
             data={items}
             renderItem={({item}) => (
               <View style={styles.buttonWrap}>
-                <TouchableOpacity onPress={handleButton} activeOpacity={0.5}>
+                <TouchableOpacity
+                  onPress={handleButton}
+                  activeOpacity={0.5}
+                  style={styles.button}>
                   <Image
-                    style={styles.button}
+                    style={styles.image}
                     source={{
                       uri:
-                        'https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Face_of_SpooSpa.jpg/450px-Face_of_SpooSpa.jpg',
+                        // 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Face_of_SpooSpa.jpg/450px-Face_of_SpooSpa.jpg',
+                        'http://bliz.domj.net/files/image2.jpg',
+                      // 'https://get.pxhere.com/photo/face-facial-hair-fine-looking-guy-man-model-person-portrait-serious-wear-1563283.jpg',
                     }}
                   />
 
-                  <Text>{item}</Text>
+                  <Text style={styles.text}>{item}</Text>
                 </TouchableOpacity>
               </View>
             )}
             numColumns={3}
-            keyExtractor={(item, _) => item}
+            keyExtractor={(_, index) => index}
           />
         </View>
       </SafeAreaView>
     </>
   );
-  /*return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
-            </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.tsx</Text> to change
-                this screen and then come back to see your edits. asdasd
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
-  );*/
 };
 
+const width = 115;
+const height = width;
+const radius = 100;
+
 const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
-  },
-  engine: {
-    position: 'absolute',
-    right: 0,
-  },
   body: {
-    backgroundColor: Colors.black,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
+    backgroundColor: '#70587C',
+    alignItems: 'center',
+    alignContent: 'center',
+    minHeight: '100%',
   },
   buttonWrap: {
-    width: 130,
-    height: 170,
-    padding: 5,
+    width: width,
+    height: height + 35,
+    margin: 8,
   },
   button: {
-    padding: 10,
-    backgroundColor: 'red',
-    borderRadius: 20,
-    height: 100,
+    // padding: 10,
+    borderRadius: radius,
+    height: height,
+    elevation: 5,
+    borderBottomColor: 'black',
+    borderBottomWidth: 5,
+  },
+  image: {
+    borderRadius: radius,
+    height: height,
+  },
+  text: {
+    textAlign: 'center',
+    // fontWeight: '700',
+    fontFamily: 'sans-serif-thin',
+    fontSize: 22,
+    color: '#F9F4F5',
+    // fontStyle: 'italic',
   },
 });
 
