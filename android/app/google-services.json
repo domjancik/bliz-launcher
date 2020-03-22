@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "144885528393",
+    "firebase_url": "https://numberfreeproject.firebaseio.com",
+    "project_id": "numberfreeproject",
+    "storage_bucket": "numberfreeproject.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:144885528393:android:3386b0f86623c268e64c98",
+        "android_client_info": {
+          "package_name": "com.blizlauncherreact"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "144885528393-6fpv1gopt631mjhq5gtb3fosab8odpjm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAUTrmQuXjVLpgd2mnSalua1mpXb8wUVBk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "144885528393-6fpv1gopt631mjhq5gtb3fosab8odpjm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
