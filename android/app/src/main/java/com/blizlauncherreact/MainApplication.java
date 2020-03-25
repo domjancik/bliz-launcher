@@ -1,4 +1,4 @@
-package com.blizlauncherreact;
+package net.domj.blizlauncher;
 
 import android.app.Application;
 import android.content.Context;

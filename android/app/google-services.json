@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:144885528393:android:3386b0f86623c268e64c98",
+        "mobilesdk_app_id": "1:144885528393:android:72748147f3737ae2e64c98",
         "android_client_info": {
-          "package_name": "com.blizlauncherreact"
+          "package_name": "net.domj.blizlauncher"
         }
       },
       "oauth_client": [

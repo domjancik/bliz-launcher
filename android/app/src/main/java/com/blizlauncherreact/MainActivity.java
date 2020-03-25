@@ -1,4 +1,4 @@
-package com.blizlauncherreact;
+package net.domj.blizlauncher;
 
 import com.facebook.react.ReactActivity;
 
