@@ -15,8 +15,8 @@ export interface LauncherIconProps {
 }
 
 const width = 115;
-const height = width;
-const radius = 100;
+const height = width + 30;
+const radius = 10;
 
 const styles = StyleSheet.create({
   body: {
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   },
   buttonWrap: {
     width: width,
-    height: height + 35,
+    height: height + 40,
     margin: 8,
   },
   button: {
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
   text: {
     textAlign: 'center',
     fontFamily: 'sans-serif-thin',
-    fontSize: 22,
+    fontSize: 28,
     color: '#F9F4F5',
     // fontStyle: 'italic',
   },
