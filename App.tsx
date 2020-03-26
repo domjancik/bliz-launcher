@@ -14,6 +14,7 @@ import {
   FlatList,
   BackHandler,
   ActivityIndicator,
+  ToastAndroid,
 } from 'react-native';
 
 import firestore from '@react-native-firebase/firestore';
@@ -23,6 +24,7 @@ import {plainToClass} from 'class-transformer';
 
 import LauncherItem from './model/launcher-item.model';
 import LauncherIcon from './components/LauncherIcon/LauncherIcon';
+import actions from './modules/actions';
 
 BackHandler.addEventListener('hardwareBackPress', function() {
   // Ignore the back button - otherwise the app gets closed and default launcher is shown
@@ -52,6 +54,15 @@ const App: React.FC = () => {
     return () => unsubscribe();
   });
 
+  const iconOpenedHandler = (action: string, arg: string) => {
+    console.log(action, arg);
+    if (actions.hasOwnProperty(action)) {
+      actions[action](arg);
+    } else {
+      ToastAndroid.show('Unknown action: ' + action, 1000);
+    }
+  };
+
   if (loading) {
     return <ActivityIndicator size="large" />;
   }
@@ -63,7 +74,9 @@ const App: React.FC = () => {
         <View style={styles.body}>
           <FlatList
             data={items}
-            renderItem={({item}) => <LauncherIcon item={item} />}
+            renderItem={({item}) => (
+              <LauncherIcon onClick={iconOpenedHandler} item={item} />
+            )}
             numColumns={3}
             keyExtractor={item => item.id}
           />

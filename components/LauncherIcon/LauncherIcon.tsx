@@ -12,6 +12,7 @@ import LauncherItem from '../../model/launcher-item.model';
 
 export interface LauncherIconProps {
   item: LauncherItem;
+  onClick: (action: string, arg: string) => void;
 }
 
 const width = 115;
@@ -51,14 +52,6 @@ const styles = StyleSheet.create({
 });
 
 const LauncherIcon: React.FC<LauncherIconProps> = props => {
-  const linkOpenedHandler = (url: string) => {
-    if (url) {
-      Linking.openURL(url);
-    } else {
-      ToastAndroid.show('No link specified', 1000);
-    }
-  };
-
   const imageUrl = props.item.image
     ? props.item.image
     : 'http://bliz.domj.net/files/default.jpg';
@@ -66,7 +59,7 @@ const LauncherIcon: React.FC<LauncherIconProps> = props => {
   return (
     <View style={styles.buttonWrap}>
       <TouchableOpacity
-        onPress={linkOpenedHandler.bind(null, props.item.url)}
+        onPress={props.onClick.bind(null, props.item.action, props.item.arg)}
         activeOpacity={0.5}
         style={styles.button}>
         <Image
