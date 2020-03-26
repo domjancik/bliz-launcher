@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  View,
-  TouchableOpacity,
-  Image,
-  Text,
-  StyleSheet,
-  Linking,
-  ToastAndroid,
-} from 'react-native';
+import {View, TouchableOpacity, Image, Text, StyleSheet} from 'react-native';
 import LauncherItem from '../../model/launcher-item.model';
 
 export interface LauncherIconProps {
