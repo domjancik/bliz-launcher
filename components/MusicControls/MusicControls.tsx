@@ -1,5 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {View, TouchableOpacity, Image, Text} from 'react-native';
+import {
+  View,
+  TouchableOpacity,
+  Image,
+  Text,
+  ActivityIndicator,
+} from 'react-native';
 
 import TrackPlayer, {Track} from 'react-native-track-player';
 import {listFilesRecursive} from '../../modules/file-utils';
@@ -19,13 +25,13 @@ const toTrack = (item: any): Track => {
 const reshuffleAndPlay = async () => {
   await TrackPlayer.reset();
   listFilesRecursive().then(items => {
-    console.log(items);
+    // console.log(items);
     const tracks = items
       .filter(item => item.name.endsWith('.mp3'))
       .map(item => toTrack(item));
 
     const shuffledTracks = _.shuffle(tracks);
-    console.log(shuffledTracks);
+    // console.log(shuffledTracks);
 
     TrackPlayer.add(shuffledTracks).then(() => {
       console.log('tracks added');
@@ -37,10 +43,12 @@ const reshuffleAndPlay = async () => {
 };
 
 const MusicControls: React.FC = () => {
-  const [playing, setPlaying] = useState(false);
+  const [state, setState] = useState<TrackPlayer.State>(TrackPlayer.STATE_NONE);
+
+  const isPlaying = state === TrackPlayer.STATE_PLAYING;
 
   const pressedHandler = () => {
-    if (playing) {
+    if (isPlaying) {
       TrackPlayer.stop();
     } else {
       reshuffleAndPlay();
@@ -48,14 +56,14 @@ const MusicControls: React.FC = () => {
   };
 
   useEffect(() => {
-    TrackPlayer.getState().then(state => {
-      const playingState = state === TrackPlayer.STATE_PLAYING;
-      setPlaying(playingState);
+    TrackPlayer.getState().then(tpState => setState(tpState));
+    TrackPlayer.addEventListener('playback-state', data => {
+      setState(data.state);
     });
-  });
+  }, []);
 
-  const title = playing ? '■ Ticho' : '► Jazz';
-  const imageFile = playing ? 'silence.jpg' : 'jazz.jpg';
+  const title = isPlaying ? '■ Ticho' : '► Jazz';
+  const imageFile = isPlaying ? 'silence.jpg' : 'jazz.jpg';
 
   return (
     <View style={styles.buttonWrap}>
@@ -70,6 +78,23 @@ const MusicControls: React.FC = () => {
               uri: `http://bliz.domj.net/files/music/${imageFile}`,
             }}
           />
+          {state !== TrackPlayer.STATE_PLAYING &&
+          state !== TrackPlayer.STATE_NONE &&
+          state !== TrackPlayer.STATE_READY &&
+          state !== TrackPlayer.STATE_PAUSED &&
+          state !== TrackPlayer.STATE_STOPPED ? (
+            <ActivityIndicator
+              color="#fff"
+              size="large"
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+              }}
+            />
+          ) : null}
         </View>
         <Text style={styles.text}>{title}</Text>
       </TouchableOpacity>
