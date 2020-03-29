@@ -18,6 +18,7 @@ import {
 } from 'react-native';
 
 import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 
 import 'reflect-metadata';
 import {plainToClass} from 'class-transformer';
@@ -27,6 +28,8 @@ import LauncherIcon from './components/LauncherIcon/LauncherIcon';
 import actions from './modules/actions';
 import MusicControls from './components/MusicControls/MusicControls';
 import TrackPlayer from 'react-native-track-player';
+
+import credentials from './modules/credentials';
 
 BackHandler.addEventListener('hardwareBackPress', function() {
   // Ignore the back button - otherwise the app gets closed and default launcher is shown
@@ -38,23 +41,33 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = firestore()
-      .collection('users/babickavera/items')
-      .orderBy('position')
-      .onSnapshot(querySnapshot => {
-        const newItems = querySnapshot.docs.map(doc =>
-          plainToClass(LauncherItem, {...doc.data(), id: doc.id}),
-        );
+    let unsubscribe: () => void;
+    auth()
+      .signInWithEmailAndPassword(credentials.username, credentials.password)
+      .then(_ => {
+        unsubscribe = firestore()
+          .collection('users/babickavera/items')
+          .orderBy('position')
+          .onSnapshot(querySnapshot => {
+            const newItems = querySnapshot.docs.map(doc =>
+              plainToClass(LauncherItem, {...doc.data(), id: doc.id}),
+            );
 
-        newItems.push(new LauncherItem('Jazz', 'music', '', '', ''));
-        setItems(newItems);
+            newItems.push(new LauncherItem('Jazz', 'music', '', '', ''));
+            setItems(newItems);
 
-        if (loading) {
-          setLoading(false);
-        }
-      });
+            if (loading) {
+              setLoading(false);
+            }
+          });
+      })
+      .catch(reason => console.log(`Login failed: ${reason}`));
 
-    return () => unsubscribe();
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
   });
 
   const iconOpenedHandler = (action: string, arg: string) => {
@@ -67,9 +80,20 @@ const App: React.FC = () => {
     }
   };
 
-  if (loading) {
-    return <ActivityIndicator size="large" />;
-  }
+  const content = loading ? (
+    <ActivityIndicator
+      size="large"
+      color="#fff"
+      style={styles.activityIndicator}
+    />
+  ) : (
+    <FlatList
+      data={items}
+      renderItem={({item}) => getListItem(item)}
+      numColumns={3}
+      keyExtractor={item => item.id}
+    />
+  );
 
   const getListItem = (item: LauncherItem) => {
     if (item.action === 'music') {
@@ -83,14 +107,7 @@ const App: React.FC = () => {
     <>
       <StatusBar barStyle="light-content" backgroundColor="#70587C" />
       <SafeAreaView>
-        <View style={styles.body}>
-          <FlatList
-            data={items}
-            renderItem={({item}) => getListItem(item)}
-            numColumns={3}
-            keyExtractor={item => item.id}
-          />
-        </View>
+        <View style={styles.body}>{content}</View>
       </SafeAreaView>
     </>
   );
@@ -102,6 +119,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignContent: 'center',
     minHeight: '100%',
+  },
+  activityIndicator: {
+    height: '100%',
   },
 });
 

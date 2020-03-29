@@ -3,7 +3,7 @@ import RNFS, {ReadDirItem} from 'react-native-fs';
 export const listFilesRecursive = async (
   path: string = RNFS.DownloadDirectoryPath,
 ) => {
-  console.log('list files');
+  //console.log('list files');
 
   const items = await RNFS.readDir(path);
   let fileList: ReadDirItem[] = [];
