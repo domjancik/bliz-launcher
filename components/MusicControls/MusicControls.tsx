@@ -27,7 +27,6 @@ const reshuffleAndPlay = async () => {
 
     TrackPlayer.add(shuffledTracks).then(() => {
       console.log('tracks added');
-      //TrackPlayer.getCurrentTrack().then(trackName => console.log(trackName));
       TrackPlayer.play().then(() => {
         console.log('playing');
       });
