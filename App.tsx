@@ -26,6 +26,7 @@ import LauncherItem from './model/launcher-item.model';
 import LauncherIcon from './components/LauncherIcon/LauncherIcon';
 import actions from './modules/actions';
 import MusicControls from './components/MusicControls/MusicControls';
+import TrackPlayer from 'react-native-track-player';
 
 BackHandler.addEventListener('hardwareBackPress', function() {
   // Ignore the back button - otherwise the app gets closed and default launcher is shown
@@ -59,6 +60,7 @@ const App: React.FC = () => {
   const iconOpenedHandler = (action: string, arg: string) => {
     console.log(action, arg);
     if (actions.hasOwnProperty(action)) {
+      TrackPlayer.stop();
       actions[action](arg);
     } else {
       ToastAndroid.show('Unknown action: ' + action, 1000);
