@@ -25,6 +25,7 @@ import {plainToClass} from 'class-transformer';
 import LauncherItem from './model/launcher-item.model';
 import LauncherIcon from './components/LauncherIcon/LauncherIcon';
 import actions from './modules/actions';
+import MusicControls from './components/MusicControls/MusicControls';
 
 BackHandler.addEventListener('hardwareBackPress', function() {
   // Ignore the back button - otherwise the app gets closed and default launcher is shown
@@ -44,6 +45,7 @@ const App: React.FC = () => {
           plainToClass(LauncherItem, {...doc.data(), id: doc.id}),
         );
 
+        newItems.push(new LauncherItem('Jazz', 'music', '', '', ''));
         setItems(newItems);
 
         if (loading) {
@@ -67,6 +69,14 @@ const App: React.FC = () => {
     return <ActivityIndicator size="large" />;
   }
 
+  const getListItem = (item: LauncherItem) => {
+    if (item.action === 'music') {
+      return <MusicControls />;
+    } else {
+      return <LauncherIcon onClick={iconOpenedHandler} item={item} />;
+    }
+  };
+
   return (
     <>
       <StatusBar barStyle="light-content" backgroundColor="#70587C" />
@@ -74,9 +84,7 @@ const App: React.FC = () => {
         <View style={styles.body}>
           <FlatList
             data={items}
-            renderItem={({item}) => (
-              <LauncherIcon onClick={iconOpenedHandler} item={item} />
-            )}
+            renderItem={({item}) => getListItem(item)}
             numColumns={3}
             keyExtractor={item => item.id}
           />
