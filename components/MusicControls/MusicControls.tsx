@@ -1,9 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, View, TouchableOpacity, Image, Text} from 'react-native';
+import {View, TouchableOpacity, Image, Text} from 'react-native';
 
 import TrackPlayer, {Track} from 'react-native-track-player';
 import {listFilesRecursive} from '../../modules/file-utils';
 import _ from 'lodash';
+
+import styles from '../shared/styles';
 
 const toTrack = (item: any): Track => {
   return {
@@ -34,42 +36,6 @@ const reshuffleAndPlay = async () => {
   });
 };
 
-const width = 115;
-const height = width + 30;
-const radius = 10;
-
-const styles = StyleSheet.create({
-  body: {
-    backgroundColor: '#70587C',
-    alignItems: 'center',
-    alignContent: 'center',
-    minHeight: '100%',
-  },
-  buttonWrap: {
-    width: width,
-    height: height + 40,
-    margin: 8,
-  },
-  button: {
-    borderRadius: radius,
-    height: height,
-    elevation: 5,
-    borderBottomColor: 'black',
-    borderBottomWidth: 5,
-  },
-  image: {
-    borderRadius: radius,
-    height: height,
-  },
-  text: {
-    textAlign: 'center',
-    fontFamily: 'sans-serif-thin',
-    fontSize: 28,
-    color: '#F9F4F5',
-    // fontStyle: 'italic',
-  },
-});
-
 const MusicControls: React.FC = () => {
   const [playing, setPlaying] = useState(false);
 
@@ -97,13 +63,14 @@ const MusicControls: React.FC = () => {
         onPress={pressedHandler}
         activeOpacity={0.5}
         style={styles.button}>
-        <Image
-          style={styles.image}
-          source={{
-            uri: `http://bliz.domj.net/files/music/${imageFile}`,
-          }}
-        />
-
+        <View style={styles.imageWrap}>
+          <Image
+            style={styles.image}
+            source={{
+              uri: `http://bliz.domj.net/files/music/${imageFile}`,
+            }}
+          />
+        </View>
         <Text style={styles.text}>{title}</Text>
       </TouchableOpacity>
     </View>
