@@ -5,7 +5,7 @@
  * @format
  */
 
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -15,6 +15,7 @@ import {
   BackHandler,
   ActivityIndicator,
   ToastAndroid,
+  Animated,
 } from 'react-native';
 
 import firestore from '@react-native-firebase/firestore';
@@ -39,6 +40,16 @@ BackHandler.addEventListener('hardwareBackPress', function() {
 const App: React.FC = () => {
   const [items, setItems] = useState<LauncherItem[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  const fadeIn = () => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+  };
 
   const loadItems = () => {
     return firestore()
@@ -77,6 +88,12 @@ const App: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (!loading) {
+      fadeIn();
+    }
+  }, [loading]);
+
   const iconOpenedHandler = (action: string, arg: string) => {
     console.log(action, arg);
     if (actions.hasOwnProperty(action)) {
@@ -114,7 +131,11 @@ const App: React.FC = () => {
     <>
       <StatusBar barStyle="light-content" backgroundColor="#70587C" />
       <SafeAreaView>
-        <View style={styles.body}>{content}</View>
+        <View style={styles.body}>
+          <Animated.View style={{opacity: loading ? 1 : fadeAnim}}>
+            {content}
+          </Animated.View>
+        </View>
       </SafeAreaView>
     </>
   );
