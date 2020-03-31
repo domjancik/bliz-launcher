@@ -1,10 +1,12 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef, useCallback} from 'react';
 import {
   View,
   TouchableOpacity,
   Image,
   Text,
   ActivityIndicator,
+  Animated,
+  Easing,
 } from 'react-native';
 
 import TrackPlayer, {Track} from 'react-native-track-player';
@@ -45,6 +47,36 @@ const reshuffleAndPlay = async () => {
 const MusicControls: React.FC = () => {
   const [state, setState] = useState<TrackPlayer.State>(TrackPlayer.STATE_NONE);
 
+  const rotAnim = useRef(new Animated.Value(0)).current;
+
+  const startDance = () => {
+    const animFront = Animated.timing(rotAnim, {
+      toValue: 0.02,
+      duration: 500,
+      useNativeDriver: true,
+    });
+
+    const animBack = Animated.timing(rotAnim, {
+      toValue: -0.02,
+      duration: 500,
+      easing: Easing.inOut(Easing.cubic),
+      useNativeDriver: true,
+    });
+
+    const seq = Animated.sequence([animFront, animBack]);
+
+    const loop = Animated.loop(seq);
+    animBack.start(() => loop.start());
+  };
+
+  const stopDance = () => {
+    Animated.timing(rotAnim, {
+      toValue: 0,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+  };
+
   const isPlaying = state === TrackPlayer.STATE_PLAYING;
 
   const pressedHandler = () => {
@@ -62,16 +94,35 @@ const MusicControls: React.FC = () => {
     });
   }, []);
 
-  const title = isPlaying ? '■ Ticho' : '► Jazz';
-  const imageFile = isPlaying ? 'silence.jpg' : 'jazz.jpg';
+  useEffect(() => {
+    if (isPlaying) {
+      startDance();
+    } else {
+      stopDance();
+    }
+  }, [isPlaying]);
+
+  const title = isPlaying ? 'Stop' : 'Jazz';
+  // const imageFile = isPlaying ? 'silence.jpg' : 'jazz.jpg';
+  const imageFile = 'jazz.jpg';
+
+  const rotation = rotAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg'],
+  });
 
   return (
-    <View style={styles.buttonWrap}>
+    <View style={{...styles.buttonWrap, width: 75}}>
       <TouchableOpacity
         onPress={pressedHandler}
         activeOpacity={0.5}
         style={styles.button}>
-        <View style={styles.imageWrap}>
+        <Animated.View
+          style={{
+            ...styles.imageWrap,
+            transform: [{rotate: rotation}],
+            //opacity: rotAnim,
+          }}>
           <Image
             style={styles.image}
             source={{
@@ -95,7 +146,7 @@ const MusicControls: React.FC = () => {
               }}
             />
           ) : null}
-        </View>
+        </Animated.View>
         <Text style={styles.text}>{title}</Text>
       </TouchableOpacity>
     </View>
