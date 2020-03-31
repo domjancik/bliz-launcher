@@ -40,35 +40,42 @@ const App: React.FC = () => {
   const [items, setItems] = useState<LauncherItem[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const loadItems = () => {
+    return firestore()
+      .collection('users/babickavera/items')
+      .orderBy('position')
+      .onSnapshot(querySnapshot => {
+        const newItems = querySnapshot.docs.map(doc =>
+          plainToClass(LauncherItem, {...doc.data(), id: doc.id}),
+        );
+
+        newItems.push(new LauncherItem('Jazz', 'music', '', '', ''));
+        setItems(newItems);
+      });
+  };
+
   useEffect(() => {
     let unsubscribe: () => void;
     auth()
       .signInWithEmailAndPassword(credentials.username, credentials.password)
       .then(_ => {
-        unsubscribe = firestore()
-          .collection('users/babickavera/items')
-          .orderBy('position')
-          .onSnapshot(querySnapshot => {
-            const newItems = querySnapshot.docs.map(doc =>
-              plainToClass(LauncherItem, {...doc.data(), id: doc.id}),
-            );
-
-            newItems.push(new LauncherItem('Jazz', 'music', '', '', ''));
-            setItems(newItems);
-
-            if (loading) {
-              setLoading(false);
-            }
-          });
+        unsubscribe = loadItems();
+        setLoading(false);
       })
-      .catch(reason => console.log(`Login failed: ${reason}`));
+      .catch(reason => {
+        console.log(`Login failed: ${reason}`);
+        console.log('Loading from cache');
+
+        unsubscribe = loadItems();
+        setLoading(false);
+      });
 
     return () => {
       if (unsubscribe) {
         unsubscribe();
       }
     };
-  });
+  }, []);
 
   const iconOpenedHandler = (action: string, arg: string) => {
     console.log(action, arg);
