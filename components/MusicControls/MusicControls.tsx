@@ -50,6 +50,8 @@ const MusicControls: React.FC = () => {
   const rotAnim = useRef(new Animated.Value(0)).current;
 
   const startDance = () => {
+    console.log('start anim');
+
     const animFront = Animated.timing(rotAnim, {
       toValue: 0.02,
       duration: 500,
@@ -70,6 +72,8 @@ const MusicControls: React.FC = () => {
   };
 
   const stopDance = () => {
+    console.log('stop anim');
+    rotAnim.stopAnimation();
     Animated.timing(rotAnim, {
       toValue: 0,
       duration: 200,
@@ -81,9 +85,9 @@ const MusicControls: React.FC = () => {
 
   const pressedHandler = () => {
     if (isPlaying) {
-      TrackPlayer.stop();
+      TrackPlayer.stop().then(stopDance);
     } else {
-      reshuffleAndPlay();
+      reshuffleAndPlay().then(startDance);
     }
   };
 
@@ -92,15 +96,11 @@ const MusicControls: React.FC = () => {
     TrackPlayer.addEventListener('playback-state', data => {
       setState(data.state);
     });
-  }, []);
 
-  useEffect(() => {
-    if (isPlaying) {
+    if (state === TrackPlayer.STATE_PLAYING) {
       startDance();
-    } else {
-      stopDance();
     }
-  }, [isPlaying]);
+  }, []);
 
   const title = isPlaying ? 'Stop' : 'Jazz';
   // const imageFile = isPlaying ? 'silence.jpg' : 'jazz.jpg';
