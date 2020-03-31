@@ -46,6 +46,7 @@ const reshuffleAndPlay = async () => {
 
 const MusicControls: React.FC = () => {
   const [state, setState] = useState<TrackPlayer.State>(TrackPlayer.STATE_NONE);
+  const [playing, setPlaying] = useState(false);
 
   const rotAnim = useRef(new Animated.Value(0)).current;
 
@@ -81,28 +82,38 @@ const MusicControls: React.FC = () => {
     }).start();
   };
 
-  const isPlaying = state === TrackPlayer.STATE_PLAYING;
-
-  const pressedHandler = () => {
-    if (isPlaying) {
-      TrackPlayer.stop().then(stopDance);
-    } else {
-      reshuffleAndPlay().then(startDance);
-    }
-  };
-
   useEffect(() => {
     TrackPlayer.getState().then(tpState => setState(tpState));
     TrackPlayer.addEventListener('playback-state', data => {
       setState(data.state);
     });
-
-    if (state === TrackPlayer.STATE_PLAYING) {
-      startDance();
-    }
   }, []);
 
-  const title = isPlaying ? 'Stop' : 'Jazz';
+  useEffect(() => {
+    if (state === TrackPlayer.STATE_PLAYING) {
+      setPlaying(true);
+    } else {
+      setPlaying(false);
+    }
+  }, [state]);
+
+  useEffect(() => {
+    if (playing) {
+      startDance();
+    } else {
+      stopDance();
+    }
+  }, [playing]);
+
+  const pressedHandler = () => {
+    if (playing) {
+      TrackPlayer.stop();
+    } else {
+      reshuffleAndPlay();
+    }
+  };
+
+  const title = playing ? 'Stop' : 'Jazz';
   // const imageFile = isPlaying ? 'silence.jpg' : 'jazz.jpg';
   const imageFile = 'jazz.jpg';
 
