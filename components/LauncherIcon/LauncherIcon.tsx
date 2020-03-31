@@ -10,9 +10,7 @@ export interface LauncherIconProps {
 }
 
 const LauncherIcon: React.FC<LauncherIconProps> = props => {
-  const imageUrl = props.item.image
-    ? props.item.image
-    : 'http://bliz.domj.net/files/default.jpg';
+  const imageUrl = props.item.image ? props.item.image : undefined;
 
   return (
     <View style={styles.buttonWrap}>

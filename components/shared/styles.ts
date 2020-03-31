@@ -21,6 +21,7 @@ const styles = StyleSheet.create({
     borderRadius: radius,
     height: height,
     elevation: 5,
+    backgroundColor: '#BD8A8B',
   },
   button: {
     height: height + textOverflow,
