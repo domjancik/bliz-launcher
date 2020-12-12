@@ -5,7 +5,7 @@ interface ActionContainer {
 }
 
 const actions: ActionContainer = {
-  url(url) {
+  url: url => {
     if (url) {
       Linking.openURL(url);
     } else {
@@ -13,14 +13,14 @@ const actions: ActionContainer = {
     }
   },
 
-  skypevideocall(skypeUsername) {
+  skypevideocall: (skypeUsername) => {
     if (skypeUsername) {
       Linking.openURL(`skype:${skypeUsername}?call&amp;video=true`);
     } else {
       ToastAndroid.show('No username specified', 1000);
     }
   },
-  skypecall(skypeUsername) {
+  skypecall: (skypeUsername) => {
     if (skypeUsername) {
       Linking.openURL(`skype:${skypeUsername}?call`);
     } else {

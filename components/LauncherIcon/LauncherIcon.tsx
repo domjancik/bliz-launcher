@@ -1,6 +1,7 @@
 import React from 'react';
 import {View, TouchableOpacity, Image, Text, StyleSheet} from 'react-native';
 import LauncherItem from '../../model/launcher-item.model';
+import {PRIMARY_COLOR} from './../../constants/theme';
 
 export interface LauncherIconProps {
   item: LauncherItem;
@@ -13,7 +14,7 @@ const radius = 10;
 
 const styles = StyleSheet.create({
   body: {
-    backgroundColor: '#70587C',
+    backgroundColor: PRIMARY_COLOR,
     alignItems: 'center',
     alignContent: 'center',
     minHeight: '100%',
@@ -43,15 +44,15 @@ const styles = StyleSheet.create({
   },
 });
 
-const LauncherIcon: React.FC<LauncherIconProps> = props => {
-  const imageUrl = props.item.image
-    ? props.item.image
+const LauncherIcon: React.FC<LauncherIconProps> = ({item, onClick}) => {
+  const imageUrl = item.image
+    ? item.image
     : 'http://bliz.domj.net/files/default.jpg';
 
   return (
     <View style={styles.buttonWrap}>
       <TouchableOpacity
-        onPress={props.onClick.bind(null, props.item.action, props.item.arg)}
+        onPress={() => onClick(item.action, item.arg)}
         activeOpacity={0.5}
         style={styles.button}>
         <Image
@@ -61,7 +62,7 @@ const LauncherIcon: React.FC<LauncherIconProps> = props => {
           }}
         />
 
-        <Text style={styles.text}>{props.item.title}</Text>
+        <Text style={styles.text}>{item.title}</Text>
       </TouchableOpacity>
     </View>
   );
